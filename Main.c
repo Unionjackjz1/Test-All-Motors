@@ -2,23 +2,42 @@ const int kMaxNumberOfPages = 9;
 const int kMinNumberOfPages = 0;
 int       iCurrentMotor = 1;
 
-float
-logDrive (int iInput, float iMultiply) {
-	return (pow(abs(iInput), iMultiply)) * sgn(iInput);
+void
+allMotorsOff( ) {
+	for( int i = 0; i < 10; i++ )
+		motor[ i ] = 0;
 }
 
-task 
+void
+clearAllLCDLines( ) {
+	clearLCDLine( 0 );
+	clearLCDLine( 1 );
+}
+
+task
 main( ) {
+	iCurrentMotor = 0;
 	while( true ) {
-		if( vexRT[Btn5U] == 1 ) {
+		if( nLCDButtons == 1 ) {
 			iCurrentMotor = iCurrentMotor == kMinNumberOfPages ? kMaxNumberOfPages : iCurrentMotor - 1;
-			while(vexRT[Btn5U]){}
+			while(nLCDButtons!=0){}
+			allMotorsOff( );
 		}
-		if( vexRT[Btn6U] == 1 ) {
+		if( nLCDButtons == 4 ) {
 			iCurrentMotor = iCurrentMotor == kMaxNumberOfPages ? kMinNumberOfPages : iCurrentMotor + 1;
-			while(vexRT[Btn6U]){}
+			while(nLCDButtons!=0){}
+			allMotorsOff( );
 		}
+
+		motor[ iCurrentMotor ] = nLCDButtons == 2 ? 127 : 0;
 		
-		motor[ iCurrentMotor ] = logDrive(vexRT[Ch2], 1.1);
+		displayLCDCenteredString( 0, "Port #" );
+		displayLCDNumber( 0, 11, iCurrentMotor+1 );
+		displayLCDString( 1, 0, "<");
+		displayLCDString( 1, 15, ">");
+		string strCurrentMotorState = abs(motor[iCurrentMotor])>=0 ? "ON" : "OFF";
+		displayLCDString( 1, 2, strCurrentMotorState);
+		delay( 50 );
+		clearAllLCDLines( );
 	}
 }

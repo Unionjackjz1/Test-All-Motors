@@ -16,6 +16,7 @@ clearAllLCDLines( ) {
 
 task
 main( ) {
+	clearDebugStream();
 	iCurrentMotor = 0;
 	while( true ) {
 		if( nLCDButtons == 1 ) {
@@ -30,12 +31,12 @@ main( ) {
 		}
 
 		motor[ iCurrentMotor ] = nLCDButtons == 2 ? 127 : 0;
-		
+
 		displayLCDCenteredString( 0, "Port #" );
 		displayLCDNumber( 0, 11, iCurrentMotor+1 );
 		displayLCDString( 1, 0, "<");
 		displayLCDString( 1, 15, ">");
-		string strCurrentMotorState = abs(motor[iCurrentMotor])>=0 ? "ON" : "OFF";
+		string strCurrentMotorState = abs(motor[iCurrentMotor])>0 ? "     ON" : "     OFF";
 		displayLCDString( 1, 2, strCurrentMotorState);
 		delay( 50 );
 		clearAllLCDLines( );
